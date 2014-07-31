@@ -68,7 +68,7 @@ namespace :resque do
           number_of_workers.times do
             pid = "#{fetch(:resque_pid_path)}/resque_work_#{worker_id}.pid"
             within current_path do
-              execute :rake, %{RAILS_ENV=#{rails_env} QUEUE="#{queue}" PIDFILE=#{pid} BACKGROUND=yes VERBOSE=1 INTERVAL=#{fetch(:interval)} #{"environment" if fetch(:resque_environment_task)} resque:work #{output_redirection}}
+              execute :rake, %{TERM_CHILD=1 RAILS_ENV=#{rails_env} RACK_ENV=#{rails_env} QUEUE="#{queue}" PIDFILE=#{pid} BACKGROUND=yes VERBOSE=1 INTERVAL=#{fetch(:interval)} #{"environment" if fetch(:resque_environment_task)} resque:work #{output_redirection}}
             end
             worker_id += 1
           end
@@ -128,7 +128,7 @@ namespace :resque do
         create_pid_path
         pid = "#{fetch(:resque_pid_path)}/scheduler.pid"
         within current_path do
-          execute :rake, %{RAILS_ENV=#{rails_env} PIDFILE=#{pid} BACKGROUND=yes VERBOSE=1 MUTE=1 resque:scheduler #{output_redirection}}
+          execute :rake, %{TERM_CHILD=1 RAILS_ENV=#{rails_env} RACK_ENV=#{rails_env} PIDFILE=#{pid} BACKGROUND=yes VERBOSE=1 MUTE=1 resque:scheduler #{output_redirection}}
         end
       end
     end
